@@ -1,4 +1,5 @@
 'use strict';
+const fs = require('fs');
 
 /**
  * product controller
@@ -8,24 +9,14 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = {
     async find(ctx) {
-        const { isAuthenticated } = ctx.state;
-
-        if (!isAuthenticated) {
-            ctx.unauthorized("Authorization is required!")
-        }
-
-        const products = await strapi.db.query('api::product.product').findMany()
+        const products = await strapi.db.query('api::product.product').findMany({ populate: ['image'] })
 
         return ctx.send(products);
     },
 
     async findOne(ctx) {
         const { id } = ctx.request.params;
-        const { isAuthenticated, user } = ctx.state;
-
-        if (!isAuthenticated) {
-            ctx.unauthorized("Authorization is required!")
-        }
+        const { user } = ctx.state;
 
         let product;
 
@@ -33,11 +24,10 @@ module.exports = {
         //we do not make one more controller we shorten it with a ifelse block
         //we use 0 because id will be > 0 so there won't be a product with id 0 ever
         if (id == 0) {
-            product = await strapi.db.query('api::product.product').findMany({ where: { user_id: user.id } });
+            product = await strapi.db.query('api::product.product').findMany({ where: { user_id: user.id }, populate: ['image'] });
         } else {
-            product = await strapi.db.query('api::product.product').findOne({ where: { id: id } });
+            product = await strapi.db.query('api::product.product').findOne({ where: { id: id }, populate: ['image'] });
         }
-
 
         if (!product) {
             return ctx.notFound("Not found a product with id: " + id);
@@ -47,14 +37,10 @@ module.exports = {
     },
 
     async create(ctx) {
-        const { user, isAuthenticated } = ctx.state;
+        const { user } = ctx.state;
         const { name, price, description } = ctx.request.body;
 
         try {
-            if (!isAuthenticated) {
-                ctx.unauthorized("Authorization is required!")
-            }
-
             //we want only sellers to be able to create product
             if (user.role.type !== "seller") {
                 return ctx.forbidden('Not allowed!');
@@ -70,8 +56,10 @@ module.exports = {
                     price: price,
                     description: description,
                     user_id: user.id,
-                }
+                },
             });
+
+            strapi.service('api::product.product')
 
 
             return ctx.send(product);
@@ -82,12 +70,8 @@ module.exports = {
 
     async update(ctx) {
         const { id } = ctx.request.params;
-        const { user, isAuthenticated } = ctx.state;
+        const { user } = ctx.state;
         const body = ctx.request.body;
-
-        if (!isAuthenticated) {
-            return ctx.unauthorized('Authentication is required!');
-        }
 
         //here we set user_id because we do not want that any seller can update any product
         //only products belong to him
@@ -107,13 +91,7 @@ module.exports = {
 
     async delete(ctx) {
         const { id } = ctx.request.params;
-        const { user, isAuthenticated } = ctx.state;
-
-        console.log(user);
-
-        if (!isAuthenticated) {
-            return ctx.unauthorized('Authentication is required!');
-        }
+        const { user } = ctx.state;
 
         //here we set user_id because we do not want that any seller can delete any product
         //only products belong to him
@@ -121,11 +99,15 @@ module.exports = {
         //because a customer won't be able to create a product anyways
         const deletedProduct = await strapi.db.query('api::product.product').delete({
             where: { id: id, user_id: user.id },
+            populate: ['image']
         });
 
         if (!deletedProduct) {
             return ctx.notFound("You do not have a product with id: " + id)
         }
+
+        fs.unlinkSync("public" + deletedProduct.image.url)
+        fs.unlinkSync("public" + deletedProduct.image.formats.thumbnail.url)
 
         return ctx.send(deletedProduct);
     },
