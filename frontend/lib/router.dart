@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/auth/login_page/login_page_view.dart';
+import 'package:frontend/pages/auth/signup_page/signup_page_view.dart';
+import 'package:frontend/pages/loading_page/loading_page_view.dart';
+import 'package:frontend/pages/main_page/main_page_view.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class PagePaths {
@@ -15,7 +19,12 @@ abstract class PagePaths {
 
 final appRouter = GoRouter(
   initialLocation: PagePaths.loading,
-  routes: [],
+  routes: [
+    AppRoute(PagePaths.main, (s) => const MainPageView()),
+    AppRoute(PagePaths.loading, (s) => const LoadingPageView()),
+    AppRoute(PagePaths.login, (s) => const LoginPageView()),
+    AppRoute(PagePaths.signup, (s) => const SignupPageView()),
+  ],
 );
 
 class AppRoute extends GoRoute {
