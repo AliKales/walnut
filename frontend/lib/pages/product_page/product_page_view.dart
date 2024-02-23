@@ -96,7 +96,15 @@ class _ProductPageViewState extends State<ProductPageView>
 
   AppBar _appBar() {
     return AppBar(
-      title: Text(isMyProduct ? LocaleKeys.newProduct : LocaleKeys.product),
+      title: const Text(LocaleKeys.product),
+      actions: [
+        if (!isNewProduct && isMyProduct)
+          IconButton(
+            onPressed: deleteProduct,
+            icon: const Icon(Icons.delete_forever),
+            color: context.colorScheme.error,
+          ),
+      ],
     );
   }
 

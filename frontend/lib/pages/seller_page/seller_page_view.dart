@@ -62,6 +62,12 @@ class _SellerPageViewState extends State<SellerPageView> with SellerPageMixin {
   AppBar _appBar() {
     return AppBar(
       title: const Text(LocaleKeys.yourProducts),
+      actions: [
+        IconButton(
+          onPressed: downloadCSV,
+          icon: const Icon(Icons.download),
+        ),
+      ],
     );
   }
 }

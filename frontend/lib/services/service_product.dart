@@ -3,6 +3,7 @@ import 'package:frontend/core/extensions/ext_dio_response.dart';
 import 'package:frontend/env.dart';
 import 'package:frontend/models/m_product.dart';
 import 'package:frontend/services/service_auth.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'base_service.dart';
 
@@ -47,6 +48,13 @@ final class ServiceProduct {
     return (200, MProduct.fromJson(result.data));
   }
 
+  static Future<int> deleteProduct(int id) async {
+    final r = await _dio.delete("/products/$id",
+        options: ServiceAuth.optionsWithBearer);
+
+    return r.statusCode ?? 500;
+  }
+
   static Future<(int, String)> uploadImage(String path, int productId) async {
     final data = FormData.fromMap({
       "refId": productId,
@@ -65,6 +73,13 @@ final class ServiceProduct {
     String url = BASE_URL + r.data[0]["url"];
 
     return (200, url);
+  }
+
+  static Future<void> downloadCSV() async {
+    final dir = await getApplicationDocumentsDirectory();
+
+    await _dio.download("/products-csv", "${dir.path}/products.csv",
+        options: ServiceAuth.optionsWithBearer);
   }
 
   ///[fetchProducts] will return (statusCode) and List of Products

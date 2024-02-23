@@ -53,4 +53,5 @@ final class LocaleKeys {
   static const tryAgain = "Try Again";
   static const pleasePickImage = "Please pick an image";
   static const product = "Product";
+  static const downloaded = "Downloaded";
 }

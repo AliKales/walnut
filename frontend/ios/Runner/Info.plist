@@ -47,5 +47,9 @@
 		<true/>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>To upload product images</string>
+		<key>UIFileSharingEnabled</key>
+		<true/>
+		<key>LSSupportsOpeningDocumentsInPlace</key>
+		<true/>
 	</dict>
 </plist>

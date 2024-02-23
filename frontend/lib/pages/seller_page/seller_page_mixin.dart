@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:caroby/caroby.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/locale_keys.dart';
 import 'package:frontend/models/m_product.dart';
 import 'package:frontend/pages/seller_page/seller_page_view.dart';
 import 'package:frontend/router.dart';
@@ -48,14 +51,31 @@ mixin SellerPageMixin on State<SellerPageView> {
   }
 
   Future<void> onProductTap(int i) async {
-    final p =
-        await context.push<MProduct?>(PagePaths.product, extra: products![i]);
+    //p will be either MProduct or int
+    //int means that product has been deleted
+    final p = await context.push(PagePaths.product, extra: products![i]);
 
     if (p == null) return;
 
-    setState(() {
-      products![i] = p;
-    });
-    productsChanged.add(p);
+    if (p is MProduct) {
+      setState(() {
+        products![i] = p;
+      });
+      productsChanged.add(p);
+    }
+
+    if (p is int) {
+      setState(() {
+        products!.removeWhere((element) => element.id == p);
+      });
+    }
+  }
+
+  Future<void> downloadCSV() async {
+    CustomProgressIndicator.showProgressIndicator(context);
+    await ServiceProduct.downloadCSV();
+    context.pop();
+
+    CustomSnackbar.showSnackBar(context: context, text: LocaleKeys.downloaded);
   }
 }

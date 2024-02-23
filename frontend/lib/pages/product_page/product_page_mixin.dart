@@ -100,6 +100,17 @@ mixin ProductPageMixin on State<ProductPageView> {
     _uploadImage(r.$2!);
   }
 
+  Future<void> deleteProduct() async {
+    final r = await ServiceProduct.deleteProduct(product!.id!);
+
+    if (r != HttpStatus.ok) {
+      showSnackbar(LocaleKeys.unexpectedError, false);
+      return;
+    }
+
+    context.pop(product!.id!);
+  }
+
   Future<void> _uploadImage(MProduct product) async {
     CustomProgressIndicator.showProgressIndicator(context);
 

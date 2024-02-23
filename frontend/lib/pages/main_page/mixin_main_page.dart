@@ -63,14 +63,25 @@ mixin MixinMainPage on State<MainPageView> {
   }
 
   Future<void> onProductTap(int i) async {
-    final p =
-        await context.push<MProduct?>(PagePaths.product, extra: products![i]);
+    //p will be either MProduct or int
+    //int means that product has been deleted
+    final p = await context.push(PagePaths.product, extra: products![i]);
 
     if (p == null) return;
 
-    setState(() {
-      products![i] = p;
-    });
+    if (p is MProduct) {
+      setState(() {
+        products![i] = p;
+      });
+      return;
+    }
+
+    if (p is int) {
+      setState(() {
+        products!.removeWhere((element) => element.id == p);
+      });
+      return;
+    }
   }
 
   ///[onProductsChange] will update [products] with new products
