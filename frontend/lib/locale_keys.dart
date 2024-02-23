@@ -33,13 +33,24 @@ final class LocaleKeys {
   static const subTotal = "Sub Total";
   static const total = "Total";
   static const shipping = "Shipping";
-  static const myStore = "My Store";
+  static const myProducts = "My Products";
   static const createProduct = "Create Product";
   static const label = "Label";
   static const price = "Price";
   static const photoUrl = "Photo URL";
   static const add = "Add";
+  static const update = "Update";
   static const alreadyHaveAnAccount = "Already have an account";
   static const mustBeEmail = "Must be an email";
   static const passwordsMatch = "Passwords must match";
+  static const becomeSeller = "Become seller";
+  static const wantBecomeSeller = "You want to become a seller?";
+  static const youBecameSeller = "You became a seller!";
+  static const yourProducts = "Your Products";
+  static const newProduct = "New Product";
+  static const name = "Name";
+  static const description = "Description";
+  static const tryAgain = "Try Again";
+  static const pleasePickImage = "Please pick an image";
+  static const product = "Product";
 }

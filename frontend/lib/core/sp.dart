@@ -29,4 +29,8 @@ final class SP {
         break;
     }
   }
+
+  static void delete(String key) {
+    _pref.remove(key);
+  }
 }

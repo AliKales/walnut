@@ -121,3 +121,27 @@ class CTextField extends StatelessWidget {
     );
   }
 }
+
+class CMoneyFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    String newText = newValue.text;
+
+    if (oldValue.text.length >= newValue.text.length) {
+      return newValue;
+    }
+
+    final regex = RegExp(r'[0-9]');
+
+    if (!regex.hasMatch(newText)) return oldValue;
+
+    if (newText.split(".").length > 2) return oldValue;
+
+    if (newText.contains(".") && newText.split(".").last.length > 2) {
+      return oldValue;
+    }
+
+    return newValue.copyWith(text: newText);
+  }
+}

@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/models/m_product.dart';
 import 'package:frontend/pages/auth/login_page/login_page_view.dart';
 import 'package:frontend/pages/auth/signup_page/signup_page_view.dart';
 import 'package:frontend/pages/loading_page/loading_page_view.dart';
 import 'package:frontend/pages/main_page/main_page_view.dart';
+import 'package:frontend/pages/product_page/product_page_view.dart';
+import 'package:frontend/pages/seller_page/seller_page_view.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class PagePaths {
@@ -15,6 +18,8 @@ abstract class PagePaths {
   static String login = "/login";
   static String signup = "/signup";
   static String loading = "/loading";
+  static String seller = "/seller";
+  static String product = "/product";
 }
 
 final appRouter = GoRouter(
@@ -24,6 +29,13 @@ final appRouter = GoRouter(
     AppRoute(PagePaths.loading, (s) => const LoadingPageView()),
     AppRoute(PagePaths.login, (s) => const LoginPageView()),
     AppRoute(PagePaths.signup, (s) => const SignupPageView()),
+    AppRoute(PagePaths.seller, (s) => const SellerPageView()),
+    AppRoute(
+      PagePaths.product,
+      (s) => ProductPageView(
+        product: s.extra as MProduct?,
+      ),
+    ),
   ],
 );
 
