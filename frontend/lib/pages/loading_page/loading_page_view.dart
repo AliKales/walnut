@@ -30,6 +30,7 @@ class _LoadingPageViewState extends State<LoadingPageView> {
   }
 
   Future<void> _afterBuild() async {
+    await Future.delayed(1500.toDuration);
     await SP.init();
     final authResult = await ServiceAuth.init();
 
